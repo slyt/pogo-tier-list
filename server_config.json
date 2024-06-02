@@ -1,0 +1,28 @@
+{
+    "host": "0.0.0.0",
+    "port": 8080,
+    "models": [
+        {
+            "model": "models/meetkai/functionary-small-v2.4-GGUF/functionary-small-v2.4.Q4_0.gguf",
+            "hf_pretrained_model_name_or_path": "models/meetkai/functionary-small-v2.4-GGUF",
+            "hf_tokenizer_config_path": "models/meetkai/functionary-small-v2.4-GGUF",
+            "model_alias": "function-calling",
+            "chat_format": "functionary-v2",
+            "n_gpu_layers": -1,
+            "offload_kqv": true,
+            "n_threads": 4,
+            "n_batch": 1,
+            "n_ctx": 0
+        },
+        {
+            "model": "models/QuantFactory/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct.Q8_0.gguf",
+            "model_alias": "reasoning",
+            "chat_format": "llama-3",
+            "n_gpu_layers": -1,
+            "offload_kqv": true,
+            "n_threads": 4,
+            "n_batch": 1,
+            "n_ctx": 0
+        }
+    ]
+}
