@@ -1,7 +1,4 @@
 
-from openai import OpenAI
-from pydantic import BaseModel
-import instructor
 import requests
 from bs4 import BeautifulSoup
 import os
@@ -112,9 +109,17 @@ def convert_name(pokemon_name):
     if "Shadow" in pokemon_name:
         pokemon_name_output = pokemon_name_output.replace("SHADOW", "") + "_SHADOW"
         form = True
-
+    if "(Confined)" in pokemon_name: # Hoopa (Confined)
+        pokemon_name_output = pokemon_name_output.replace("(CONFINED)", "") + "_CONFINED"
+        form = True
+    if "(Unbound)" in pokemon_name: # Hoopa (Unbound)
+        pokemon_name_output = pokemon_name_output.replace("(Unbound)", "") + "_UNBOUND"
+        form = True
+    
     if form:
         pokemon_name_output = pokemon_name_output + "_FORM"
+
+    pokemon_name_output = pokemon_name_output.replace("'", "") # e.g. Sirfetch'd to SIRFETCHD
     return pokemon_name_output
 
 if __name__ == "__main__":
@@ -137,15 +142,6 @@ if __name__ == "__main__":
     # load the pokemon battle data into a pandas dataframe
     pokemon_battle_data = pd.DataFrame(pokemon_battle_data["pokemon"])
 
-    client = instructor.from_openai(
-        OpenAI(
-            base_url="http://localhost:8080/v1",
-            api_key="ollama",  # required, but unused
-        ),
-        mode=instructor.Mode.JSON
-    )
-
-
     url = "https://gamepress.gg/pokemongo/attackers-tier-list"
     response = requests.get(url)
     response.raise_for_status()
@@ -164,27 +160,6 @@ if __name__ == "__main__":
         pokemon_name_converted = convert_name(pokemon['name'])
         print(f"Converted Name: {pokemon_name_converted}")
         print("---")
-
-        # try:
-        #     pokemon_structured = client.chat.completions.create(
-        #         model="function-calling",
-        #         messages=[
-        #             {
-        #                 "role": "user",
-        #                 "content": f"Extract the pokemon:  Tier: {pokemon['tier']}, Name: {pokemon['name']}, content: {pokemon['content']}",
-        #             }
-        #         ],
-        #         response_model=Pokemon,
-        #         max_retries=10
-        #     )
-
-        # except instructor.exceptions.InstructorRetryException  as e:
-        #     print(e)
-        #     print(e.n_attempts)
-        #     print(e.last_completion)
-
-        # print(pokemon_structured)
-        # pokemon_structured_list.append(pokemon_structured)
 
     # save the structured data to pickle file
     import pickle
